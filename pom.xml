@@ -871,14 +871,16 @@
 		</plugins>
 	</reporting>
 	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<url>${releases.repo}</url>
-		</repository>
 		<snapshotRepository>
-			<id>snapshots</id>
-			<url>${snapshots.repo}</url>
+			<id>nexus-snapshots</id>
+			<name>nexus distribution snapshot repository</name>
+			<url>http://ci.we.com/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Internal Releases</name>
+			<url>http://ci.we.com/nexus/content/repositories/releases/</url>
+		</repository>
 	</distributionManagement>
 </project>
 

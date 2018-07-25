@@ -25,6 +25,8 @@ public final class EnvUtils {
         return Env.LOCAL;
       case "TOOLS":
         return Env.TOOLS;
+      case "TEST":
+        return Env.TEST;
       default:
         return null;
     }

@@ -1,7 +1,7 @@
 #!/bin/bash
 SERVICE_NAME=apollo-adminservice
 ## Adjust log dir if necessary
-LOG_DIR=/opt/logs/100003172
+LOG_DIR=/usr/local/src/spring-cloud/log/apollo/adminservice
 ## Adjust server port if necessary
 SERVER_PORT=8090
 

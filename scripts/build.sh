@@ -11,10 +11,10 @@ apollo_portal_db_username=root
 apollo_portal_db_password=admin
 
 # meta server url, different environments should have different meta server addresses
-dev_meta=http://t8t.sc.apollo:8080
-uat_meta=http://t8t.sc.apollo:8080
-pro_meta=http://t8t.sc.apollo:8080
-test_meta=http://t8t.sc.apollo:8080
+dev_meta=http://dev.t8t.sc.apollo:80
+test_meta=http://test.t8t.sc.apollo:80
+uat_meta=http://uat.t8t.sc.apollo:80
+pro_meta=http://pro.t8t.sc.apollo:80
 
 META_SERVERS_OPTS="-Ddev_meta=$dev_meta -Dtest_meta=$test_meta -Duat_meta=$uat_meta -Dpro_meta=$pro_meta"
 

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
-	<property name="LOG_FILE"
-		value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}apollo-adminservice.log}" />
-	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
-	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	<property name="FILE_PATTERN" value="[entry][ts]%d{yyyy-MM-dd$HH:mm:ss.SSS}[/ts][lv]%-2level[/lv][th]%thread[/th][lg]%logger[/lg][cl]%class[/cl][m]%method[/m][ln]%line[/ln][bsid]%X{bsid}[/bsid][esid]%X{esid}[/esid][cmid]%X{cmid}[/cmid][txt]%msg[/txt][ex]%ex{full}[/ex][/entry]%n" />
+	<appender name="FILEOUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/data/logs/java/logs/apollo-adminservice-application-sc-main.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>/data/logs/java/logs/apollo-adminservice-application-sc-main.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxHistory>7</maxHistory>
+			<maxFileSize>200MB</maxFileSize>
+			<totalSizeCap>10GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${FILE_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
 	<root level="INFO">
-		<appender-ref ref="FILE" />
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILEOUT" />
 	</root>
 </configuration>

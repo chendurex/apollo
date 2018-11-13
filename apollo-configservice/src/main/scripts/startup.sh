@@ -3,7 +3,7 @@ SERVICE_NAME=apollo-configservice
 ## Adjust log dir if necessary
 LOG_DIR=/data/logs/java/logs
 ## Adjust server port if necessary
-SERVER_PORT=8080
+SERVER_PORT=9090
 
 ## Adjust memory settings if necessary
 #export JAVA_OPTS="-Xms6144m -Xmx6144m -Xss256k -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=384m -XX:NewSize=4096m -XX:MaxNewSize=4096m -XX:SurvivorRatio=8"

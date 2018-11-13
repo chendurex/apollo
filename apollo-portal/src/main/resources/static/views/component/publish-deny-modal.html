@@ -7,7 +7,11 @@
                 <h4 class="modal-title">发布受限</h4>
             </div>
             <div class="modal-body">
+                <!--
                 您不能发布哟~{{env}}环境配置的编辑和发布必须为不同的人，请找另一个具有当前namespace发布权的人操作发布~
+                您不能发布哟~{{env}}环境配置的编辑和发布必须为不同的人，且目前仅限业务运维人员发布，请找另一个具有当前namespace发布权的业务运维人员操作发布~
+                -->
+                您不能发布哟~{{env}}环境配置的发布目前仅限业务运维人员操作，请找一个具有当前namespace发布权的业务运维人员操作发布~
                 <span ng-if="toReleaseNamespace.isEmergencyPublishAllowed">
                     <br><br><small>（如果是非工作时间或者特殊情况，您可以通过点击<mark>紧急发布</mark>按钮进行发布）</small>
                 </span>

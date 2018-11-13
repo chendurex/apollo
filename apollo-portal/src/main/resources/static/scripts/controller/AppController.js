@@ -1,8 +1,8 @@
 app_module.controller('CreateAppController',
-                      ['$scope', '$window', 'toastr', 'AppService', 'AppUtil', 'OrganizationService',
-                       createAppController]);
+    ['$scope', '$window', 'toastr', 'AppService', 'AppUtil', 'OrganizationService', 'PermissionService',
+        createAppController]);
 
-function createAppController($scope, $window, toastr, AppService, AppUtil, OrganizationService) {
+function createAppController($scope, $window, toastr, AppService, AppUtil, OrganizationService, PermissionService) {
 
     $scope.app = {};
     $scope.submitBtnDisabled = false;
@@ -13,6 +13,7 @@ function createAppController($scope, $window, toastr, AppService, AppUtil, Organ
 
     function init() {
         initOrganization();
+        initPermission();
     }
 
     function initOrganization() {
@@ -26,13 +27,20 @@ function createAppController($scope, $window, toastr, AppService, AppUtil, Organ
                 organizations.push(org);
             });
             $('#organization').select2({
-                                           placeholder: '请选择部门',
-                                           width: '100%',
-                                           data: organizations
-                                       });
+                placeholder: '请选择部门',
+                width: '100%',
+                data: organizations
+            });
         }, function (result) {
             toastr.error(AppUtil.errorMsg(result), "load organizations error");
         });
+    }
+
+    function initPermission() {
+        PermissionService.has_root_permission()
+            .then(function (result) {
+                $scope.isRootUser = result.hasPermission;
+            })
     }
 
     function create() {

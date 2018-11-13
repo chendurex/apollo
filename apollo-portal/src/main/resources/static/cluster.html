@@ -17,7 +17,7 @@
 <apollonav></apollonav>
 <div class="container-fluid apollo-container hidden" ng-controller="ClusterController">
 
-    <div class="row">
+    <div class="row" ng-if="hasRootPermission">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel">
                 <header class="panel-heading">
@@ -41,11 +41,13 @@
                         <ul>
                             <li>通过添加集群，可以使同一份程序在不同的集群（如不同的数据中心）使用不同的配置</li>
                             <li>如果不同集群使用一样的配置，则没有必要创建集群</li>
+                            <!--
                             <li>
-                                Apollo默认会读取机器上/opt/settings/server.properties(linux)或C:\opt\settings\server.properties(windows)文件中的idc属性作为集群名字，
+                                配置中心默认会读取机器上/opt/settings/server.properties(linux)或C:\opt\settings\server.properties(windows)文件中的idc属性作为集群名字，
                                 如SHAJQ（金桥数据中心）、SHAOY（欧阳数据中心)
                             </li>
-                            <li>在这里创建的集群名字需要和机器上server.properties中的idc属性一致</li>
+                            -->
+                            <li>在这里创建的集群名字需要和apollo同步客户端上cfg.yml中的cluster属性一致</li>
                         </ul>
                     </div>
                     <form class="form-horizontal" name="clusterForm" valdr-type="Cluster" ng-show="step == 1"
@@ -63,7 +65,7 @@
                                 <apollorequiredfield></apollorequiredfield>
                                 集群名称</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="clusterName" ng-model="clusterName">
+                                <input type="text" class="form-control" name="clusterName" ng-model="$parent.clusterName">
                                 <small>(部署集群如:SHAJQ,SHAOY 或自定义集群如:SHAJQ-xx,SHAJQ-yy)</small>
                             </div>
                         </div>
@@ -102,6 +104,11 @@
             </div>
         </div>
     </div>
+
+    <div class="row text-center" ng-show="!hasRootPermission">
+        <h4>当前页面只对配置中心管理员开放</h4>
+    </div>
+
 </div>
 
 <div ng-include="'views/common/footer.html'"></div>
@@ -128,10 +135,10 @@
 <script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
 <script type="application/javascript" src="scripts/services/CommonService.js"></script>
+<script type="application/javascript" src="scripts/services/PermissionService.js"></script>
 <script type="application/javascript" src="scripts/services/ClusterService.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
 <script type="application/javascript" src="scripts/directive/directive.js"></script>
-<script type="application/javascript" src="scripts/services/PermissionService.js"></script>
 
 <script type="application/javascript" src="scripts/controller/ClusterController.js"></script>
 

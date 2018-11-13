@@ -25,7 +25,7 @@
             <section class="row">
                 <h5>创建第三方应用
                     <small>
-                        (说明: 第三方应用可以通过Apollo开放平台来对配置进行管理)
+                        (说明: 第三方应用可以通过配置中心开放平台来对配置进行管理)
                     </small>
                 </h5>
                 <hr>
@@ -63,7 +63,7 @@
                             第三方应用名称</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control" ng-model="consumer.name">
-                            <small>(建议格式 xx-yy-zz 例:apollo-server)</small>
+                            <small>(建议格式 xx-yy-zz 例:t8t-sys-abc)</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -117,7 +117,7 @@
                             被管理的Namespace</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control" ng-model="consumerRole.namespaceName">
-                            <small>(非properties类型的namespace请加上类型后缀，例如apollo.xml)</small>
+                            <small>(非properties类型的namespace请加上类型后缀)</small>
                         </div>
                     </div>
                     <div class="form-group" valdr-form-group>
@@ -150,7 +150,7 @@
         </section>
 
         <section class="panel-body text-center" ng-if="!isRootUser">
-            <h4>当前页面只对Apollo管理员开放</h4>
+            <h4>当前页面只对配置中心管理员开放</h4>
         </section>
 
     </div>

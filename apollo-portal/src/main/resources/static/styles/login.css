@@ -1,0 +1,194 @@
+/*��¼ҳ��start*/
+.config-login-bottom {
+    border-bottom: 1px solid #ddd;
+}
+
+.config-login-head {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.config-login-head img {
+    width: 150px;
+    padding: 15px 0px;
+}
+
+.config-login-head a {
+    color: #636563;
+}
+
+.login-head-font {
+    font-size: 16px;
+    vertical-align: middle;
+    margin-left: 15px;
+}
+
+.login-head-nav {
+    margin-top: 30px;
+    padding-right: 12px;
+    margin-right: 12px;
+    border-right: 1px solid;
+    font-size: 13px;
+    line-height: 13px;
+}
+
+.login-nav-frist {
+    margin-right: 150px;
+    border-right: none;
+}
+
+.login-content {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #ecedef;
+}
+
+.login-border {
+    border: 1px solid #ddd;
+}
+
+.login-module {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: 860px;
+    padding: 70px 0px;
+    background: white;
+    margin-top: -319px;
+    margin-left: -430px;
+}
+
+.login-module > form {
+    width: 320px;
+    margin: 0px auto;
+}
+
+.login-module .header-reset {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.login-module .form-control {
+    margin: 8px 0px;
+}
+
+.login-module input:-webkit-autofill {
+    background-color: white;
+}
+
+.login-module .reset-icon {
+    left: 12px;
+    line-height: 44px;
+    font-size: 22px;
+    color: #b7cbdc;
+}
+
+.login-module input::-webkit-input-placeholder {
+    color: #b7cbdc;
+}
+
+.login-module input:-moz-input-placeholder {
+    color: #b7cbdc;
+}
+
+.login-module input::-moz-input-placeholder {
+    color: #b7cbdc;
+}
+
+.login-module input:-ms-input-placeholder {
+    color: #b7cbdc;
+}
+
+.login-module .form-control.form-control-reset {
+    line-height: normal;
+    padding: 12px 6px 12px 54px;
+    height: 46px;
+    border-color: #dae3eb;
+}
+
+.login-color {
+    color: #0eaf63;
+}
+
+.login-background {
+    font-size: 16px;
+    text-shadow: none !important;
+    padding: 10px 0px;
+    border-radius: 6px;
+    background-color: #5ca4eb !important;
+    border-color: #5ca4eb;
+}
+
+.input-left-icon {
+    position: absolute;
+    top: 29%;
+    left: 44px;
+    display: block;
+    width: 1px;
+    height: 42%;
+    background-color: #dae3eb;
+}
+
+.btn.login-background:hover {
+    background-color: #5ca4eb !important;
+    border-color: #5ca4eb;
+}
+
+.btn.login-background:focus {
+    background-color: #5ca4eb !important;
+    border-color: #5ca4eb;
+}
+
+.login-toolbar {
+    width: 100%;
+    text-align: center;
+    padding: 30px 0px;
+}
+
+.login-footer {
+    text-align: center;
+    padding-top: 30px;
+}
+
+.config-login-layout .widget-box.visible {
+    visibility: visible;
+    -moz-transform: scale(1, 1) translate(0);
+    -webkit-transform: scale(1, 1) translate(0);
+    -o-transform: scale(1, 1) translate(0);
+    -ms-transform: scale(1, 1) translate(0);
+    transform: scale(1, 1) translate(0);
+    -webkit-transition: all .3s ease;
+    transition: all .3s ease;
+    -o-transition: none;
+    -webkit-transition: none;
+}
+
+.config-login-layout .widget-box {
+    visibility: hidden;
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    border-bottom: 0;
+    box-shadow: none;
+    padding: 6px;
+    background-color: #C5C5C5;
+    -moz-transform: scale(0, 1) translate(-150px);
+    -webkit-transform: scale(0, 1) translate(-150px);
+    -o-transform: scale(0, 1) translate(-150px);
+    -ms-transform: scale(0, 1) translate(-150px);
+    transform: scale(0, 1) translate(-150px);
+}
+
+.login-to-old {
+    text-align: right;
+    padding: 0px 80px;
+}
+
+.login-to-old a {
+    color: #4ba2f9;
+}
+
+/*��¼ҳ��end*/

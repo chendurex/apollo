@@ -24,9 +24,6 @@
                 <header class="panel-heading">
                     <div class="row">
                         <div class="col-md-6">新建Namespace
-                        <small><a target="_blank" href="https://github.com/ctripcorp/apollo/wiki/Apollo%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B9%8B%E2%80%9CNamespace%E2%80%9D">
-                            (点击了解更多Namespace相关知识)
-                        </a> </small>
                         </div>
                         <div class="col-md-6 text-right">
                             <button type="button" class="btn btn-info" ng-click="back()">返回到项目首页
@@ -57,7 +54,9 @@
                             <li>
                                 通过创建一个私有的Namespace可以实现分组管理配置
                             </li>
-                            <li>私有Namespace的格式可以是xml、yml、yaml、json. 您可以通过Apollo-client中ConfigFile接口来获取非properties格式Namespace的内容</li>
+                            <!--
+                            <li>私有Namespace的格式可以是xml、yml、yaml、json. 您可以通过client中ConfigFile接口来获取非properties格式Namespace的内容</li>
+                            -->
                         </ul>
                     </div>
                     <div class="row text-right" style="padding-right: 20px;">
@@ -108,10 +107,12 @@
                             <div class="col-sm-2" ng-show="!appNamespace.isPublic">
                                 <select class="form-control" name="format" ng-model="appNamespace.format">
                                     <option value="properties">properties</option>
+                                    <!--
                                     <option value="xml">xml</option>
                                     <option value="json">json</option>
                                     <option value="yml">yml</option>
                                     <option value="yaml">yaml</option>
+                                    -->
                                 </select>
                             </div>
 

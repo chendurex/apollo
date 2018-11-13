@@ -32,7 +32,7 @@
 
                 <button type="button" class="btn btn-success btn-sm"
                         data-tooltip="tooltip" data-placement="bottom" title="发布配置"
-                        ng-show="(namespace.hasReleasePermission || namespace.hasModifyPermission)"
+                        ng-if="(namespace.hasLockPermission || namespace.hasUnLockPermission)"
                         ng-disabled="namespace.isTextEditing"
                         ng-click="publish(namespace)">
                     <img src="img/release.png">
@@ -40,13 +40,14 @@
                 </button>
                 <button type="button" class="btn btn-default btn-sm"
                         data-tooltip="tooltip" data-placement="bottom" title="回滚已发布配置"
-                        ng-show="namespace.hasReleasePermission"
+                        ng-if="(namespace.hasLockPermission || namespace.hasUnLockPermission)"
                         ng-click="rollback(namespace)">
                     <img src="img/rollback.png">
                     回滚
                 </button>
                 <a type="button" class="btn btn-default btn-sm"
                    data-tooltip="tooltip" data-placement="bottom" title="查看发布历史"
+                   ng-if="(namespace.hasLockPermission || namespace.hasUnLockPermission)"
                    href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}">
                     <img src="img/release-history.png">
                     发布历史
@@ -59,6 +60,7 @@
                     授权
                 </a>
 
+                <!--
                 <a type="button" class="btn btn-default btn-sm"
                    data-tooltip="tooltip" data-placement="bottom" title="创建测试版本"
                    ng-show="!namespace.hasBranch && namespace.isPropertiesFormat && namespace.hasModifyPermission"
@@ -66,6 +68,7 @@
                     <img src="img/test.png">
                     灰度
                 </a>
+                -->
 
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
                    data-tooltip="tooltip" data-placement="bottom" title="您没有任何配置权限,请申请"
@@ -92,7 +95,8 @@
         </div>
     </header>
 
-    <div id="BODY{{namespace.id}}" class="collapse in">
+    <div id="BODY{{namespace.id}}" class="collapse in"
+         ng-if="(namespace.hasLockPermission || namespace.hasUnLockPermission)">
         <!--second header-->
         <header class="panel-heading second-panel-heading">
             <div class="row">
@@ -188,7 +192,7 @@
 
                 <div class="J_namespace-release-tip well well-sm no-radius text-center"
                      ng-show="namespace.isLatestReleaseLoaded && !namespace.isLinkedNamespace && !namespace.latestRelease">
-                    <span style="color: red"> Tips: 此namespace从来没有发布过，Apollo客户端将获取不到配置并记录404日志信息，请及时发布。</span>
+                    <span style="color: red"> Tips: 此namespace从来没有发布过，配置中心客户端将获取不到配置并记录404日志信息，请及时发布。</span>
                 </div>
                 <!--not link namespace-->
                 <div ng-if="!namespace.isLinkedNamespace">
@@ -622,19 +626,18 @@
 
             <!--text view-->
             <!--只读模式下的文本内容,不替换换行符-->
-            <div ui-ace="aceConfig" readonly="true"
-                 class="form-control no-radius"
-                 rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
-                 ng-show="namespace.viewType == 'text' && !namespace.isTextEditing"
-                 ng-model="namespace.text">
-            </div>
+            <textarea class="form-control no-radius"
+                      rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
+                      ng-show="namespace.viewType == 'text' && !namespace.isTextEditing"
+                      ng-disabled="!namespace.isTextEditing"
+                      ng-bind="namespace.text">
+            </textarea>
             <!--编辑状态下的文本内容,会过滤掉换行符-->
-            <div ui-ace="aceConfig"
-                 class="form-control no-radius"
-                 rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
-                 ng-show="namespace.viewType == 'text' && namespace.isTextEditing"
-                 ng-disabled="!namespace.isTextEditing" ng-model="namespace.editText">
-            </div>
+            <textarea class="form-control no-radius"
+                      rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
+                      ng-show="namespace.viewType == 'text' && namespace.isTextEditing"
+                      ng-disabled="!namespace.isTextEditing" ng-model="namespace.editText">
+            </textarea>
 
             <!--history view-->
             <div class="J_historyview history-view" ng-show="namespace.viewType == 'history'">
@@ -779,7 +782,7 @@
                     <div class="row">
 
                         <div class="col-md-5 col-sm-5">
-                            <small>实例说明:只展示最近一天访问过Apollo的实例</small>
+                            <small>实例说明:只展示最近一天访问过配置中心的实例</small>
                         </div>
                         <div class="col-md-7 col-sm-7 text-right">
                             <div class="btn-group btn-group-sm" role="group">

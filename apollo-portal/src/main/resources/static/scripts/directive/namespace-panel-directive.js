@@ -65,20 +65,20 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             scope.deleteNamespace = deleteNamespace;
 
             var subscriberId = EventManager.subscribe(EventManager.EventType.UPDATE_GRAY_RELEASE_RULES,
-                                                      function (context) {
-                                                          useRules(context.branch);
-                                                      }, scope.namespace.baseInfo.namespaceName);
+                function (context) {
+                    useRules(context.branch);
+                }, scope.namespace.baseInfo.namespaceName);
 
             scope.$on('$destroy', function () {
                 EventManager.unsubscribe(EventManager.EventType.UPDATE_GRAY_RELEASE_RULES,
-                                         subscriberId, scope.namespace.baseInfo.namespaceName);
+                    subscriberId, scope.namespace.baseInfo.namespaceName);
             });
 
             init();
 
             function init() {
                 initNamespace(scope.namespace);
-                initOther();
+                initOther(scope.namespace);
             }
 
             function initNamespace(namespace, viewType) {
@@ -111,8 +111,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                 function initNamespaceBranch(namespace) {
                     NamespaceBranchService.findNamespaceBranch(scope.appId, scope.env,
-                                                               namespace.baseInfo.clusterName,
-                                                               namespace.baseInfo.namespaceName)
+                        namespace.baseInfo.clusterName,
+                        namespace.baseInfo.namespaceName)
                         .then(function (result) {
 
                             if (!result.baseInfo) {
@@ -242,7 +242,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     }
                     //load public namespace
                     ConfigService.load_public_namespace_for_associated_namespace(scope.env, scope.appId, scope.cluster,
-                                                                                 namespace.baseInfo.namespaceName)
+                        namespace.baseInfo.namespaceName)
                         .then(function (result) {
                             var publicNamespace = result;
                             namespace.publicNamespace = publicNamespace;
@@ -294,8 +294,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                 function initNamespaceLock(namespace) {
                     NamespaceLockService.get_namespace_lock(scope.appId, scope.env,
-                                                            namespace.baseInfo.clusterName,
-                                                            namespace.baseInfo.namespaceName)
+                        namespace.baseInfo.clusterName,
+                        namespace.baseInfo.namespaceName)
                         .then(function (result) {
                             namespace.lockOwner = result.lockOwner;
                             namespace.isEmergencyPublishAllowed = result.isEmergencyPublishAllowed;
@@ -324,15 +324,15 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             function initNamespaceInstancesCount(namespace) {
                 InstanceService.getInstanceCountByNamespace(scope.appId,
-                                                            scope.env,
-                                                            scope.cluster,
-                                                            namespace.baseInfo.namespaceName)
+                    scope.env,
+                    scope.cluster,
+                    namespace.baseInfo.namespaceName)
                     .then(function (result) {
                         namespace.instancesCount = result.num;
                     })
             }
 
-            function initOther() {
+            function initOther(namespace) {
 
                 UserService.load_user().then(function (result) {
                     scope.currentUser = result.userId;
@@ -344,6 +344,25 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     }, function (result) {
 
                     });
+
+                PermissionService.has_root_permission()
+                    .then(function (result) {
+                        scope.isRootUser = result.hasPermission;
+
+                        rootLockPermission(namespace)
+                    });
+            }
+
+            function rootLockPermission(namespace) {
+
+                if (namespace.hasModifyPermission || namespace.hasReleasePermission) {
+                    if (namespace.baseInfo.namespaceName == 'cmdb' && scope.env == 'PRO' && scope.isRootUser) {
+                        namespace.hasLockPermission = true;
+                    }
+                    if (namespace.baseInfo.namespaceName != 'cmdb' || scope.env != 'PRO') {
+                        namespace.hasUnLockPermission = true;
+                    }
+                }
             }
 
             function switchBranch(branchName) {
@@ -393,11 +412,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                 var size = 10;
                 CommitService.find_commits(scope.appId,
-                                           scope.env,
-                                           namespace.baseInfo.clusterName,
-                                           namespace.baseInfo.namespaceName,
-                                           namespace.commitPage,
-                                           size)
+                    scope.env,
+                    namespace.baseInfo.clusterName,
+                    namespace.baseInfo.namespaceName,
+                    namespace.commitPage,
+                    size)
                     .then(function (result) {
                         if (result.length < size) {
                             namespace.hasLoadAllCommit = true;
@@ -426,9 +445,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 if (namespace_instance_view_type.LATEST_RELEASE == type) {
                     if (!namespace.latestRelease) {
                         ReleaseService.findLatestActiveRelease(scope.appId,
-                                                               scope.env,
-                                                               namespace.baseInfo.clusterName,
-                                                               namespace.baseInfo.namespaceName)
+                            scope.env,
+                            namespace.baseInfo.clusterName,
+                            namespace.baseInfo.namespaceName)
                             .then(function (result) {
                                 namespace.isLatestReleaseLoaded = true;
 
@@ -439,9 +458,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                                 }
                                 namespace.latestRelease = result;
                                 InstanceService.findInstancesByRelease(scope.env,
-                                                                       namespace.latestRelease.id,
-                                                                       namespace.latestReleaseInstancesPage,
-                                                                       size)
+                                    namespace.latestRelease.id,
+                                    namespace.latestReleaseInstancesPage,
+                                    size)
                                     .then(function (result) {
                                         namespace.latestReleaseInstances = result;
                                         namespace.latestReleaseInstancesPage++;
@@ -449,9 +468,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                             });
                     } else {
                         InstanceService.findInstancesByRelease(scope.env,
-                                                               namespace.latestRelease.id,
-                                                               namespace.latestReleaseInstancesPage,
-                                                               size)
+                            namespace.latestRelease.id,
+                            namespace.latestReleaseInstancesPage,
+                            size)
                             .then(function (result) {
                                 if (result && result.content.length) {
                                     namespace.latestReleaseInstancesPage++;
@@ -469,10 +488,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         return;
                     }
                     InstanceService.findByReleasesNotIn(scope.appId,
-                                                        scope.env,
-                                                        scope.cluster,
-                                                        namespace.baseInfo.namespaceName,
-                                                        namespace.latestRelease.id)
+                        scope.env,
+                        scope.cluster,
+                        namespace.baseInfo.namespaceName,
+                        namespace.latestRelease.id)
                         .then(function (result) {
                             if (!result || result.length == 0) {
                                 return
@@ -505,11 +524,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                 } else {
                     InstanceService.findInstancesByNamespace(scope.appId,
-                                                             scope.env,
-                                                             scope.cluster,
-                                                             namespace.baseInfo.namespaceName,
-                                                             '',
-                                                             namespace.allInstancesPage)
+                        scope.env,
+                        scope.cluster,
+                        namespace.baseInfo.namespaceName,
+                        '',
+                        namespace.allInstancesPage)
                         .then(function (result) {
                             if (result && result.content.length) {
                                 namespace.allInstancesPage++;
@@ -545,10 +564,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             function initRules(branch) {
 
                 NamespaceBranchService.findBranchGrayRules(scope.appId,
-                                                           scope.env,
-                                                           scope.cluster,
-                                                           scope.namespace.baseInfo.namespaceName,
-                                                           branch.baseInfo.clusterName)
+                    scope.env,
+                    scope.cluster,
+                    scope.namespace.baseInfo.namespaceName,
+                    branch.baseInfo.clusterName)
                     .then(function (result) {
 
                         if (result.appId) {
@@ -599,11 +618,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             function useRules(branch) {
                 NamespaceBranchService.updateBranchGrayRules(scope.appId,
-                                                             scope.env,
-                                                             scope.cluster,
-                                                             scope.namespace.baseInfo.namespaceName,
-                                                             branch.baseInfo.clusterName,
-                                                             branch.rules
+                    scope.env,
+                    scope.cluster,
+                    scope.namespace.baseInfo.namespaceName,
+                    branch.baseInfo.clusterName,
+                    branch.rules
                 )
                     .then(function (result) {
                         toastr.success('灰度规则更新成功');
@@ -663,17 +682,17 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 }
                 namespace.commitChangeBtnDisabled = true;
                 ConfigService.modify_items(scope.appId,
-                                           scope.env,
-                                           scope.cluster,
-                                           namespace.baseInfo.namespaceName,
-                                           model).then(
+                    scope.env,
+                    scope.cluster,
+                    namespace.baseInfo.namespaceName,
+                    model).then(
                     function (result) {
                         toastr.success("更新成功, 如需生效请发布");
                         //refresh all namespace items
                         EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
-                                          {
-                                              namespace: namespace
-                                          });
+                            {
+                                namespace: namespace
+                            });
                         return true;
 
                     }, function (result) {
@@ -760,7 +779,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 if (!namespace.hasReleasePermission) {
                     AppUtil.showModal('#releaseNoPermissionDialog');
                     return;
-                } else if (namespace.lockOwner && scope.user == namespace.lockOwner) {
+                    //} else if (namespace.lockOwner && scope.user == namespace.lockOwner) {
+                } else if ((namespace.lockOwner && scope.user == namespace.lockOwner) || (scope.env == 'PRO' && !scope.isRootUser)) {
                     //can not publish if config modified by himself
                     EventManager.emit(EventManager.EventType.PUBLISH_DENY, {
                         namespace: namespace,
@@ -774,9 +794,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 }
 
                 EventManager.emit(EventManager.EventType.PUBLISH_NAMESPACE,
-                                  {
-                                      namespace: namespace
-                                  });
+                    {
+                        namespace: namespace
+                    });
             }
 
             function mergeAndPublish(branch) {
@@ -803,27 +823,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 EventManager.emit(EventManager.EventType.PRE_DELETE_NAMESPACE, {namespace: namespace});
             }
 
-            //theme: https://github.com/ajaxorg/ace-builds/tree/ba3b91e04a5aa559d56ac70964f9054baa0f4caf/src-min
-            scope.aceConfig = {
-                $blockScrolling: Infinity,
-                showPrintMargin: false,
-                theme: 'eclipse',
-                mode: scope.namespace.format === 'yml' ? 'yaml' : scope.namespace.format,
-                onLoad: function (_editor) {
-                    _editor.$blockScrolling = Infinity;
-                    _editor.setOptions({
-                                           fontSize: 13,
-                                           minLines: 10,
-                                           maxLines: 20
-                                       })
-                }
-            };
-
             setTimeout(function () {
                 scope.namespace.show = true;
             }, 70);
-
-
         }
     }
 }

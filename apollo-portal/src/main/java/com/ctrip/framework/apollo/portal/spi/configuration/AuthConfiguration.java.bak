@@ -74,7 +74,7 @@ public class AuthConfiguration {
     public FilterRegistrationBean casFilter() {
       FilterRegistrationBean singleSignOutFilter = new FilterRegistrationBean();
       singleSignOutFilter.setFilter(filter("org.jasig.cas.client.session.SingleSignOutFilter"));
-      singleSignOutFilter.addUrlPatterns("/*");
+      singleSignOutFilter.addUrlPatterns("");
       singleSignOutFilter.setOrder(1);
       return singleSignOutFilter;
     }
@@ -93,7 +93,7 @@ public class AuthConfiguration {
 
       casFilter.setInitParameters(filterInitParam);
       casFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAuthenticationFilter"));
-      casFilter.addUrlPatterns("/*");
+      casFilter.addUrlPatterns("");
       casFilter.setOrder(2);
 
       return casFilter;
@@ -114,7 +114,7 @@ public class AuthConfiguration {
       casValidationFilter
           .setFilter(filter("org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"));
       casValidationFilter.setInitParameters(filterInitParam);
-      casValidationFilter.addUrlPatterns("/*");
+      casValidationFilter.addUrlPatterns("");
       casValidationFilter.setOrder(3);
 
       return casValidationFilter;
@@ -132,7 +132,7 @@ public class AuthConfiguration {
       assertionHolderFilter.setInitParameters(filterInitParam);
 
       assertionHolderFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAssertionThreadLocalFilter"));
-      assertionHolderFilter.addUrlPatterns("/*");
+      assertionHolderFilter.addUrlPatterns("");
       assertionHolderFilter.setOrder(4);
 
       return assertionHolderFilter;
@@ -234,7 +234,6 @@ public class AuthConfiguration {
     }
 
   }
-
   @Order(99)
   @Profile("auth")
   @Configuration
@@ -248,8 +247,8 @@ public class AuthConfiguration {
     protected void configure(HttpSecurity http) throws Exception {
       http.csrf().disable();
       http.headers().frameOptions().sameOrigin();
-      http.authorizeRequests().antMatchers("/openapi/**", "/vendor/**", "/styles/**", "/scripts/**", "/views/**", "/img/**").permitAll()
-      .antMatchers("/**").hasAnyRole(USER_ROLE);
+      http.authorizeRequests().antMatchers("/openapi*", "/vendor*", "/styles*", "/scripts*", "/views*", "/img*").permitAll()
+      .antMatchers("*").hasAnyRole(USER_ROLE);
       http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and().httpBasic();
       http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
       http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));

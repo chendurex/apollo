@@ -62,6 +62,8 @@ public class MetaDomainConsts {
         env.getProperty("pro_meta", prop.getProperty("pro.meta", DEFAULT_META_URL)));
     domains.put(Env.TEST,
             env.getProperty("test_meta", prop.getProperty("test.meta", DEFAULT_META_URL)));
+    domains.put(Env.IDC,
+            env.getProperty("idc_meta", prop.getProperty("idc.meta", DEFAULT_META_URL)));
   }
 
   public static String getDomain(Env env) {

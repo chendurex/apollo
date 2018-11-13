@@ -29,7 +29,7 @@ public class ClusterController {
   @Autowired
   private UserInfoHolder userInfoHolder;
 
-  @PreAuthorize(value = "@permissionValidator.hasCreateClusterPermission(#appId)")
+  @PreAuthorize(value = "@permissionValidator.hasCreateClusterPermission(#appId) AND @permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "apps/{appId}/envs/{env}/clusters", method = RequestMethod.POST)
   public ClusterDTO createCluster(@PathVariable String appId, @PathVariable String env,
                                   @RequestBody ClusterDTO cluster) {

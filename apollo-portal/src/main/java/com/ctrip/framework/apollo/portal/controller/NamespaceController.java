@@ -125,7 +125,8 @@ public class NamespaceController {
     return ResponseEntity.ok().build();
   }
 
-  @PreAuthorize(value = "@permissionValidator.hasDeleteNamespacePermission(#appId)")
+  //@PreAuthorize(value = "@permissionValidator.hasDeleteNamespacePermission(#appId)")
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.DELETE)
   public ResponseEntity<Void> deleteNamespace(@PathVariable String appId, @PathVariable String env,
                                               @PathVariable String clusterName, @PathVariable String namespaceName) {

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Apollo配置中心</title>
+    <title>配置中心</title>
     <link rel="icon" href="./img/config.png">
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="vendor/angular/angular-toastr-1.4.1.min.css">
@@ -36,7 +36,7 @@
                     <header class="panel-heading">
                         环境列表
                         <span class="pull-right"
-                              data-tooltip="tooltip" data-placement="bottom" title="通过切换环境、集群来管理不同环境、集群的配置">
+                              data-tooltip="tooltip" data-placement="bottom" title="通过切换环境来管理不同环境的配置，其中FAT为测试环境，UAT为预发环境，PRO为生产环境">
                                     <img src="img/question.png" class="i-20"/>
                             </span>
                     </header>
@@ -48,7 +48,7 @@
                 <section class="panel">
                     <header class="panel-heading">
                         项目信息
-                            <span class="pull-right">
+                        <span class="pull-right">
 
                                 <a href="/app/setting.html?#/appid={{pageContext.appId}}"
                                    style="margin-right: 5px;text-decoration:none;">
@@ -92,6 +92,7 @@
                                     <small ng-bind="appBaseInfo.ownerEmail"></small>
                                 </td>
                             </tr>
+                            <!--
                             <tr ng-show="missEnvs.length > 0">
                                 <th>缺失的环境:</th>
                                 <td>
@@ -99,6 +100,7 @@
                                 </span>
                                 </td>
                             </tr>
+                            -->
                             </tbody>
                         </table>
 
@@ -288,7 +290,8 @@
                              apollo-detail="'发现有 <b>' + deleteNamespaceContext.namespace.instancesCount +
                              '</b> 个实例正在使用Namespace(' + deleteNamespaceContext.namespace.baseInfo.namespaceName +
                              ')，删除Namespace将导致实例获取不到配置。<br>
-                             请到 <ins>“实例列表”</ins> 确认实例信息，如确认相关实例都已经不再使用该Namespace配置，可以联系Apollo相关负责人删除实例信息（InstanceConfig）或等待实例24小时自动过期后再来删除。'"
+                             请到 <ins>“实例列表”</ins> 确认实例信息，如已确认删除Namespace将不会导致实例异常，
+                             请联系配置中心相关负责人删除Namespace'"
                              apollo-confirm="continueDeleteNamespace">
         </apolloconfirmdialog>
 
@@ -297,7 +300,8 @@
                              apollo-detail="'发现有 <b>' + deleteNamespaceContext.namespace.branch.latestReleaseInstances.total
                              + '</b> 个实例正在使用Namespace(' + deleteNamespaceContext.namespace.baseInfo.namespaceName +
                              ')灰度版本的配置，删除Namespace将导致实例获取不到配置。<br>
-                             请到 <ins>“灰度版本” => “实例列表”</ins> 确认实例信息，如确认相关实例都已经不再使用该Namespace配置，可以联系Apollo相关负责人删除实例信息（InstanceConfig）或等待实例24小时自动过期后再来删除。'"
+                             请到 <ins>“灰度版本” => “实例列表”</ins> 确认实例信息，如已确认删除Namespace将不会导致实例异常，
+                             请联系配置中心相关负责人删除Namespace'"
                              apollo-confirm="continueDeleteNamespace">
         </apolloconfirmdialog>
 
@@ -369,16 +373,6 @@
 <script src="vendor/diff.min.js" type="text/javascript"></script>
 
 <script src="vendor/clipboard.min.js" type="text/javascript"></script>
-
-<script src="vendor/ui-ace/ace.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/ui-ace.min.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/mode-properties.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/mode-xml.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/mode-yaml.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/mode-json.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/worker-json.js" type="text/javascript"></script>
-<script src="vendor/ui-ace/worker-xml.js" type="text/javascript"></script>
-
 
 
 <!--valdr-->

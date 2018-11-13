@@ -27,6 +27,8 @@ public final class EnvUtils {
         return Env.TOOLS;
       case "TEST":
         return Env.TEST;
+      case "IDC":
+        return Env.IDC;
       default:
         return null;
     }

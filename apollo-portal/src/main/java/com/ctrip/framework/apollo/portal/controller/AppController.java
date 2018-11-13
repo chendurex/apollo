@@ -56,7 +56,7 @@ public class AppController {
 
   @RequestMapping(value = "", method = RequestMethod.GET)
   public List<App> findApps(@RequestParam(value = "appIds", required = false) String appIds) {
-    if (StringUtils.isEmpty(appIds)) {
+    if (StringUtils.isEmpty(appIds) && rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId())) {
       return appService.findAll();
     } else {
       return appService.findByAppIds(Sets.newHashSet(appIds.split(",")));
@@ -69,6 +69,7 @@ public class AppController {
     return appService.findByOwnerName(owner, page);
   }
 
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "", method = RequestMethod.POST)
   public App create(@RequestBody AppModel appModel) {
 

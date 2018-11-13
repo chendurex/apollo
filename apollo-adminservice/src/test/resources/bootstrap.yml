@@ -3,7 +3,7 @@ eureka:
     hostname: ${hostname:localhost}
   client:
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8090/eureka/
+      defaultZone: http://${eureka.instance.hostname}:9099/eureka/
     healthcheck:
       enabled: true
       

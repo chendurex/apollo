@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.component;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.constant.PermissionType;
 import com.ctrip.framework.apollo.portal.service.RolePermissionService;
@@ -76,5 +77,9 @@ public class PermissionValidator {
 
   public boolean isSuperAdmin() {
     return rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId());
+  }
+
+  public boolean isNotProEnv(String env) {
+    return Env.IDC != Env.fromString(env);
   }
 }

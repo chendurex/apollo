@@ -93,7 +93,7 @@ public class NamespaceController {
     return namespaceService.findPublicNamespaceForAssociatedNamespace(Env.valueOf(env), appId, clusterName, namespaceName);
   }
 
-  @PreAuthorize(value = "@permissionValidator.hasCreateNamespacePermission(#appId)")
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/apps/{appId}/namespaces", method = RequestMethod.POST)
   public ResponseEntity<Void> createNamespace(@PathVariable String appId,
                                               @RequestBody List<NamespaceCreationModel> models) {

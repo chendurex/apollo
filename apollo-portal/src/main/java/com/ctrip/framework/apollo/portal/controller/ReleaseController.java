@@ -36,7 +36,9 @@ public class ReleaseController {
   @Autowired
   private PortalConfig portalConfig;
 
-  @PreAuthorize(value = "@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName)")
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin() " +
+          "or (@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName) " +
+          "and @permissionValidator.isNotProEnv(#env))")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases", method = RequestMethod.POST)
   public ReleaseDTO createRelease(@PathVariable String appId,
                                   @PathVariable String env, @PathVariable String clusterName,

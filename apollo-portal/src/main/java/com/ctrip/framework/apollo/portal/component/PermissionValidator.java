@@ -79,7 +79,8 @@ public class PermissionValidator {
     return rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId());
   }
 
-  public boolean isNotProEnv(String env) {
-    return Env.IDC != Env.fromString(env);
+  public boolean hasPermissionOperationForEnv(String env) {
+    String v = portalConfig.getValue("apollo.permission.role.env", "idc");
+    return v.toUpperCase().contains(env.toUpperCase());
   }
 }

@@ -1,13 +1,10 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.common.dto.AppNamespaceDTO;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.portal.listener.AppNamespaceDeletionEvent;
-import com.google.common.collect.Sets;
-
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
@@ -16,6 +13,7 @@ import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.bo.NamespaceBO;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
+import com.ctrip.framework.apollo.portal.listener.AppNamespaceDeletionEvent;
 import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
@@ -23,7 +21,7 @@ import com.ctrip.framework.apollo.portal.service.RolePermissionService;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
 import com.ctrip.framework.apollo.tracer.Tracer;
-
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +29,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
@@ -75,9 +66,10 @@ public class NamespaceController {
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces", method = RequestMethod.GET)
   public List<NamespaceBO> findNamespaces(@PathVariable String appId, @PathVariable String env,
                                           @PathVariable String clusterName) {
-    if (Env.IDC == Env.fromString(env) && !rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId())) {
+    String hidedEnv = portalConfig.getValue("apollo.hided.private.env", "idc");
+    if (hidedEnv.toUpperCase().contains(env) && !rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId())) {
       List<NamespaceBO> namespaces = namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);
-      String hidedNameSpace = portalConfig.getValue("apollo.t8t.hided.private.namespace", "private");
+      String hidedNameSpace = portalConfig.getValue("apollo.hided.private.namespace", "private");
       return namespaces.stream().filter(s -> !hidedNameSpace.contains(s.getBaseInfo().getNamespaceName())).collect(Collectors.toList());
     } else {
       return namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);

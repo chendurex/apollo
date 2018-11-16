@@ -38,8 +38,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
 
@@ -72,8 +75,13 @@ public class NamespaceController {
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces", method = RequestMethod.GET)
   public List<NamespaceBO> findNamespaces(@PathVariable String appId, @PathVariable String env,
                                           @PathVariable String clusterName) {
-
-    return namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);
+    if (Env.IDC == Env.fromString(env) && !rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId())) {
+      List<NamespaceBO> namespaces = namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);
+      String hidedNameSpace = portalConfig.getValue("apollo.t8t.hided.private.namespace", "private");
+      return namespaces.stream().filter(s -> !hidedNameSpace.contains(s.getBaseInfo().getNamespaceName())).collect(Collectors.toList());
+    } else {
+      return namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);
+    }
   }
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.GET)
@@ -93,6 +101,12 @@ public class NamespaceController {
     return namespaceService.findPublicNamespaceForAssociatedNamespace(Env.valueOf(env), appId, clusterName, namespaceName);
   }
 
+  /**
+   * 关联公共配置
+   * @param appId
+   * @param models
+   * @return
+   */
   @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/apps/{appId}/namespaces", method = RequestMethod.POST)
   public ResponseEntity<Void> createNamespace(@PathVariable String appId,
@@ -159,7 +173,13 @@ public class NamespaceController {
     return BeanUtils.transfrom(AppNamespaceDTO.class, appNamespace);
   }
 
-  @PreAuthorize(value = "@permissionValidator.hasCreateAppNamespacePermission(#appId, #appNamespace)")
+  /**
+   * 创建公共或私有配置
+   * @param appId
+   * @param appNamespace
+   * @return
+   */
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
   public AppNamespace createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 

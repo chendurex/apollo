@@ -81,6 +81,6 @@ public class PermissionValidator {
 
   public boolean hasPermissionOperationForEnv(String env) {
     String v = portalConfig.getValue("apollo.permission.role.env", "idc");
-    return v.toUpperCase().contains(env.toUpperCase());
+    return !v.toUpperCase().contains(env.toUpperCase());
   }
 }

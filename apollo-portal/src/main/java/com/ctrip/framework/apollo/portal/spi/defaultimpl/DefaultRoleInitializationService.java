@@ -50,6 +50,7 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
                            operator);
 
     initNamespaceRoles(appId, ConfigConsts.NAMESPACE_APPLICATION, operator);
+    initNamespaceRoles(appId, ConfigConsts.NAMESPACE_PRIVATE, operator);
 
     //assign modify、release namespace role to user
     rolePermissionService.assignRoleToUsers(
@@ -58,7 +59,13 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
     rolePermissionService.assignRoleToUsers(
         RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.RELEASE_NAMESPACE),
         Sets.newHashSet(operator), operator);
-
+    // add private role
+    rolePermissionService.assignRoleToUsers(
+            RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_PRIVATE, RoleType.MODIFY_NAMESPACE),
+            Sets.newHashSet(operator), operator);
+    rolePermissionService.assignRoleToUsers(
+            RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_PRIVATE, RoleType.RELEASE_NAMESPACE),
+            Sets.newHashSet(operator), operator);
   }
 
   @Transactional

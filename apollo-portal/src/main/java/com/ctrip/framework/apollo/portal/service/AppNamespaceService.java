@@ -47,8 +47,9 @@ public class AppNamespaceService {
 
   @Transactional
   public void createDefaultAppNamespace(String appId) {
-    if (!isAppNamespaceNameUnique(appId, ConfigConsts.NAMESPACE_APPLICATION)) {
-      throw new BadRequestException(String.format("App already has application namespace. AppId = %s", appId));
+    if (!isAppNamespaceNameUnique(appId, ConfigConsts.NAMESPACE_APPLICATION)
+            || !isAppNamespaceNameUnique(appId, ConfigConsts.NAMESPACE_PRIVATE)) {
+      throw new BadRequestException(String.format("App already has application or private namespace. AppId = %s", appId));
     }
 
     AppNamespace appNs = new AppNamespace();
@@ -59,8 +60,16 @@ public class AppNamespaceService {
     String userId = userInfoHolder.getUser().getUserId();
     appNs.setDataChangeCreatedBy(userId);
     appNs.setDataChangeLastModifiedBy(userId);
-
     appNamespaceRepository.save(appNs);
+
+    AppNamespace privateNS = new AppNamespace();
+    privateNS.setAppId(appId);
+    privateNS.setName(ConfigConsts.NAMESPACE_PRIVATE);
+    privateNS.setComment("default private namespace");
+    privateNS.setFormat(ConfigFileFormat.Properties.getValue());
+    privateNS.setDataChangeCreatedBy(userId);
+    privateNS.setDataChangeLastModifiedBy(userId);
+    appNamespaceRepository.save(privateNS);
   }
 
   public boolean isAppNamespaceNameUnique(String appId, String namespaceName) {

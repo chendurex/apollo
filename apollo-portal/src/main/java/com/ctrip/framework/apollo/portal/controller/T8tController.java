@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -44,21 +45,21 @@ public class T8tController {
      * 如果记录存在则修改，否则新增
      */
     @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item/password/{password}", method = RequestMethod.POST)
-    public String modifyItem(@PathVariable String appId, @PathVariable String env,
+    public HttpEntity<String> modifyItem(@PathVariable String appId, @PathVariable String env,
                               @PathVariable String clusterName, @PathVariable String namespaceName,@PathVariable String password,
                               @RequestBody ItemDTO item) {
 
         if (!password().equals(password)) {
-            return "password is not correctly";
+            return new HttpEntity<>("password is not correctly");
         }
         if (!availableNamespace().contains(namespaceName)) {
-            return "namespace is not correctly";
+            return new HttpEntity<>("namespace is not correctly");
         }
         if (!isValidItem(item)) {
             log.warn("请求数据有误");
-            return "key or value is not empty";
+            return new HttpEntity<>("key or value is not empty");
         }
-
+        env = env.toUpperCase();
         ItemDTO origin = null;
         try {
             origin = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, item.getKey());
@@ -68,7 +69,7 @@ public class T8tController {
                 // ignore
             } else {
                 log.error("查询数据失败,", e);
-                return "查询数据失败，错误信息"+Throwables.getStackTraceAsString(e);
+                return new HttpEntity<>("查询数据失败，错误信息"+Throwables.getStackTraceAsString(e));
             }
         }
         try {
@@ -86,9 +87,9 @@ public class T8tController {
             createRelease(appId, env, clusterName, namespaceName, releaseModel);
         } catch (Exception e) {
             log.error("操作apollo异常", e);
-            return "操作apollo异常"+ Throwables.getStackTraceAsString(e);
+            return new HttpEntity<>("操作apollo异常"+ Throwables.getStackTraceAsString(e));
         }
-        return "ok";
+        return new HttpEntity<>("ok");
     }
 
     private String password() {
@@ -139,15 +140,16 @@ public class T8tController {
     }
 
     @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item/password/{password}/{key:.+}", method = RequestMethod.POST)
-    public String deleteItem(@PathVariable String appId, @PathVariable String env,@PathVariable String clusterName,
+    public HttpEntity<String> deleteItem(@PathVariable String appId, @PathVariable String env,@PathVariable String clusterName,
                            @PathVariable String namespaceName,@PathVariable String password, @PathVariable String key) {
         if (!password().equals(password)) {
-            return "password is not correctly";
+            return new HttpEntity<>("password is not correctly");
         }
         if (!availableNamespace().contains(namespaceName)) {
-            return "namespace is not correctly";
+            return new HttpEntity<>("namespace is not correctly");
         }
         ItemDTO toDeleteItem = null;
+        env = env.toUpperCase();
         try {
             toDeleteItem = itemService.loadItem(Env.fromString(env), appId, clusterName, namespaceName, key);
         } catch (Exception e) {
@@ -156,11 +158,11 @@ public class T8tController {
                 // ignore
             } else {
                 log.error("查询数据失败,", e);
-                return "查询数据失败，错误信息"+Throwables.getStackTraceAsString(e);
+                return new HttpEntity<>("查询数据失败，错误信息"+Throwables.getStackTraceAsString(e));
             }
         }
         if (toDeleteItem == null) {
-            return "ok";
+            return new HttpEntity<>("ok");
         }
         try {
             itemService.deleteItem(Env.fromString(env), toDeleteItem.getId(), USER_ID);
@@ -171,8 +173,26 @@ public class T8tController {
             createRelease(appId, env, clusterName, namespaceName, releaseModel);
         } catch (Exception e) {
             log.error("删除apollo数据失败,", e);
-            return "delete fail, error trace:"+Throwables.getStackTraceAsString(e);
+            return new HttpEntity<>("delete fail, error trace:"+Throwables.getStackTraceAsString(e));
         }
-        return "ok";
+        return new HttpEntity<>("ok");
+    }
+
+    @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item/password/{password}/{key:.+}", method = RequestMethod.GET)
+    public HttpEntity<Object> loadItem(@PathVariable String appId, @PathVariable String env,@PathVariable String clusterName,
+                           @PathVariable String namespaceName,@PathVariable String key) {
+        String err;
+        try {
+            return new HttpEntity<>(itemService.loadItem(Env.fromString(env.toUpperCase()), appId, clusterName, namespaceName, key).getValue());
+        } catch (Exception e) {
+            err = e.toString();
+            if (err != null && err.contains("404")) {
+                err = "数据不存在";
+            } else {
+                log.error("查询数据失败,", e);
+                err = "查询数据失败，错误信息"+Throwables.getStackTraceAsString(e);
+            }
+        }
+        return new HttpEntity<>("error:"+err);
     }
 }

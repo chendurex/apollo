@@ -56,12 +56,7 @@ public class AppController {
 
   @RequestMapping(value = "", method = RequestMethod.GET)
   public List<App> findApps(@RequestParam(value = "appIds", required = false) String appIds) {
-    if (StringUtils.isEmpty(appIds) && rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId())) {
       return appService.findAll();
-    } else {
-      return appService.findByAppIds(Sets.newHashSet(appIds.split(",")));
-    }
-
   }
 
   @RequestMapping(value = "/by-owner", method = RequestMethod.GET)

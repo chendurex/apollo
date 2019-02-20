@@ -26,11 +26,13 @@ function createAppController($scope, $window, toastr, AppService, AppUtil, Organ
                 org.name = item.orgName;
                 organizations.push(org);
             });
-            $('#organization').select2({
-                placeholder: '请选择部门',
-                width: '100%',
-                data: organizations
-            });
+            setTimeout(() => {
+                    $('#organization').select2({
+                        placeholder: '请选择部门',
+                        width: '100%',
+                        data: organizations,
+                    })
+                }, 100) 
         }, function (result) {
             toastr.error(AppUtil.errorMsg(result), "load organizations error");
         });

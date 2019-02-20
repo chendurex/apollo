@@ -83,4 +83,9 @@ public class PermissionValidator {
     String v = portalConfig.getValue("apollo.permission.role.env", "idc");
     return !v.toUpperCase().contains(env.toUpperCase());
   }
+
+  public boolean isSubAdmin() {
+    String v = portalConfig.getValue("apollo.sub.admin", "nothing");
+    return v.contains(userInfoHolder.getUser().getUserId());
+  }
 }

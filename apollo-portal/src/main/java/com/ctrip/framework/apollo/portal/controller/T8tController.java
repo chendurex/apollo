@@ -92,6 +92,54 @@ public class T8tController {
         return new HttpEntity<>("ok");
     }
 
+    /**
+     * 修改记录
+     * 如果记录不存在则返回失败
+     */
+    @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item/modify/password/{password}", method = RequestMethod.POST)
+    public HttpEntity<String> modify(@PathVariable String appId, @PathVariable String env,
+                                         @PathVariable String clusterName, @PathVariable String namespaceName,@PathVariable String password,
+                                         @RequestBody ItemDTO item) {
+
+        if (!password().equals(password)) {
+            return new HttpEntity<>("password is not correctly");
+        }
+        if (!isValidItem(item)) {
+            log.warn("请求数据有误");
+            return new HttpEntity<>("key or value is not empty");
+        }
+        env = env.toUpperCase();
+        ItemDTO origin = null;
+        try {
+            origin = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, item.getKey());
+        } catch (Exception e) {
+            String err = e.toString();
+            if (err != null && err.contains("404")) {
+                // ignore
+            } else {
+                log.error("查询数据失败,", e);
+                return new HttpEntity<>("查询数据失败，错误信息"+Throwables.getStackTraceAsString(e));
+            }
+        }
+        try {
+            if (origin == null) {
+                return new HttpEntity<>("要更新的数据不存在，错误信息");
+            } else {
+                log.info("更新数据，原始数据为：{}", origin.getValue());
+                updateItem(appId, env, clusterName, namespaceName, item, origin);
+            }
+            NamespaceReleaseModel releaseModel = new NamespaceReleaseModel();
+            releaseModel.setReleaseTitle(releaseTitle());
+            releaseModel.setReleaseComment(item.getComment());
+            releaseModel.setReleasedBy("client-dynamic");
+            createRelease(appId, env, clusterName, namespaceName, releaseModel);
+        } catch (Exception e) {
+            log.error("操作apollo异常", e);
+            return new HttpEntity<>("操作apollo异常"+ Throwables.getStackTraceAsString(e));
+        }
+        return new HttpEntity<>("ok");
+    }
+
     private String password() {
         return  portalConfig.getValue("apollo.operator.password", USER_ID);
     }
